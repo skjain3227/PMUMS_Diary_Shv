@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>व्यक्तिगत सहयोग डायरी | PMUM शिक्षक संघ मप्र - कर्मचारी कल्याण कोष योजना</title>
+  
+  <!-- Modern Google Fonts: Inter & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="header-top-banner">
+    <span>🤝 शिक्षक एकता - हमारी शक्ति - सहयोग हमारा कर्तव्य</span>
+    <span style="opacity: 0.5;">|</span>
+    <span>मेरा सहयोग - मेरा संकल्प</span>
+  </div>
+
+  <!-- Header & Union Branding -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="header-title-row">
+        <div class="header-logo-badge side-logo">
+          <img src="logo.png" alt="PMUMS logo" />
+        </div>
+        <h1 class="header-org-title">PMUM शिक्षक संघ मप्र</h1>
+        <div class="header-logo-badge side-logo">
+          <img src="logo.png" alt="PMUMS logo" />
+        </div>
+      </div>
+      <h2 class="header-scheme-title">कर्मचारी कल्याण कोष योजना</h2>
+      <div class="header-diary-pill">📖 व्यक्तिगत सहयोग डायरी</div>
+      <p class="header-motto">
+        "दिवंगत शिक्षक/ कर्मचारी के परिवार के साथ हमारा सहयोग, हमारी एकता का प्रतीक"
+      </p>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="container" style="flex: 1;">
+    
+    <!-- Search Section (Equivalent to Sheet1 Cell D10) -->
+    <section class="search-section">
+      <div class="search-card">
+        <div class="search-title-row">
+          <div class="search-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>सदस्य डायरी खोजें (Search Member Diary)</span>
+          </div>
+          <div class="connector-status-group">
+            <div id="dataSourceBadge" class="data-source-badge badge-excel">
+              <span class="status-dot"></span>
+              <span id="dataSourceText">PMUMS Diary.xlsx (1,752 सदस्य)</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="searchForm" class="search-form">
+          <div class="input-group">
+            <span class="input-group-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+            </span>
+            <input 
+              type="tel" 
+              id="mobileInput" 
+              class="search-input" 
+              placeholder="10 अंकों का मोबाइल नंबर दर्ज करें (उदा. )" 
+              maxlength="14"
+              autocomplete="off"
+              required
+            >
+          </div>
+          <button type="submit" id="btnSearch" class="btn-search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>डायरी देखें</span>
+          </button>
+          <button type="button" id="btnReset" class="btn-reset">रीसेट</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Error / Info Alert -->
+    <div id="alertBox" class="alert-box alert-error">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span id="alertMsg">त्रुटि संदेश</span>
+    </div>
+
+    <!-- Empty State Prompt -->
+    <div id="emptyState" class="empty-state">
+      <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        <line x1="9" y1="7" x2="15" y2="7"></line>
+        <line x1="9" y1="11" x2="15" y2="11"></line>
+      </svg>
+      <h3>कृपया अपना मोबाइल नंबर दर्ज करें</h3>
+      <p>ऊपर दिए गए बॉक्स में अपना 10 अंकों का पंजीकृत मोबाइल नंबर दर्ज करें और अपनी संपूर्ण व्यक्तिगत सहयोग डायरी देखें।</p>
+    </div>
+
+    <!-- Member Profile Card (सदस्य का विवरण) -->
+    <section id="profileSection" class="profile-card">
+      <div class="card-header-bar">
+        <div class="card-header-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>सदस्य का विवरण (Member Profile)</span>
+        </div>
+        <div class="status-badge-active">
+          <span class="status-dot"></span>
+          <span>सक्रिय सदस्य (ACTIVE MEMBER)</span>
+        </div>
+      </div>
+
+      <div class="profile-grid">
+        <div class="profile-item">
+          <div class="profile-label">नाम सदस्य (Member Name)</div>
+          <div id="profName" class="profile-value highlight">-</div>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-label">रजिस्ट्रेशन नंबर (PMUMS ID)</div>
+          <div id="profPmumsId" class="profile-value code">-</div>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-label">विभागीय यूनिक आईडी (Department Unique ID)</div>
+          <div id="profUniqueId" class="profile-value code">-</div>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-label">मोबाइल नंबर (Mobile No.)</div>
+          <div id="profMobile" class="profile-value">-</div>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-label">पदस्थ शाला / स्कूल (School Name)</div>
+          <div id="profSchool" class="profile-value">-</div>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-label">विकासखंड / ब्लॉक (Block)</div>
+          <div id="profBlock" class="profile-value">-</div>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-label">जिला (District)</div>
+          <div id="profDistrict" class="profile-value">-</div>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-label">पंजीयन दिनांक (Registration Date)</div>
+          <div id="profRegDate" class="profile-value">-</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Summary Stats Banner -->
+    <section id="statsSection" class="stats-banner">
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-details">
+          <h4>कुल सहयोग संख्या</h4>
+          <p id="statTotalDonations">0</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="stat-details">
+          <h4>कुल सहयोग राशि</h4>
+          <p id="statTotalAmount">₹0</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon amber">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div class="stat-details">
+          <h4>अंतिम सहयोग तिथि</h4>
+          <p id="statLastDate" style="font-size: 1.15rem;">-</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contribution Register Table (सहयोग विवरण रजिस्टर) -->
+    <section id="tableSection" class="table-section-card">
+      <div class="table-card-header">
+        <div class="table-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span>सहयोग विवरण रजिस्टर (Contribution Ledger)</span>
+        </div>
+
+        <div class="table-action-btns">
+          <button id="btnPrint" class="btn-action btn-print">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span>डायरी प्रिंट करें / PDF</span>
+          </button>
+          <button id="btnExportCsv" class="btn-action btn-export">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>CSV डाउनलोड</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="diary-table" id="diaryTable">
+          <thead>
+            <tr>
+              <th class="col-sno">क्रम</th>
+              <th class="col-ben">दिवंगत शिक्षक का नाम</th>
+              <th class="col-date">सहयोग की तिथि</th>
+              <th class="col-amt">सहयोग राशि</th>
+              <th>भुगतान का माध्यम</th>
+              <th>खाता नम्बर / UPI ID</th>
+              <th>रिमार्क / UTR नंबर</th>
+            </tr>
+          </thead>
+          <tbody id="diaryTableBody">
+            <!-- Dynamic Rows Injected by app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer-notes">
+        <p>
+          <span style="font-weight: 700;">📌 नोट (1):</span> 
+          यह जानकारी वेबसाइट/पोर्टल रिकॉर्ड के आधार पर है, इसे अंतिम जानकारी न समझा जाए।
+        </p>
+        <p>
+          <span style="font-weight: 700;">📌 नोट (2):</span> 
+          कृपया आपके द्वारा किए गए सहयोग के पेमेंट स्लिप के स्क्रीनशॉट के प्रिंट आउट निकालकर फ़ाइल बनाकर रखें।
+        </p>
+      </div>
+    </section>
+    <!-- Leadership Contacts Card -->
+    <section class="leadership-card">
+      <div class="brand-tagline">
+        <span>शिक्षकों का संगठन</span>
+        <span class="tag-divider">•</span>
+        <span>शिक्षकों के लिए</span>
+        <span class="tag-divider">•</span>
+        <span>शिक्षकों द्वारा</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>PMUM शिक्षक संघ मध्यप्रदेश | कर्मचारी कल्याण कोष योजना</p>
+      <p style="margin-top: 4px; font-size: 0.8rem; color: #64748b;">
+        Made by Sanjay Jain, IT Cell (8878543227) • Designed with HTML5 & Vanilla CSS
+      </p>
+    </div>
+  </footer>
+
+  <!-- 1. Offline SheetJS (Excel Parser) -->
+  <script src="xlsx.full.min.js"></script>
+  <!-- 2. Direct Excel File Loader (Automatically parses PMUMS Diary.xlsx) -->
+  <script src="excel-connector.js"></script>
+  <!-- 3. Application Logic & User Interface Controller -->
+  <script src="app.js"></script>
+
+</body>
+</html>
