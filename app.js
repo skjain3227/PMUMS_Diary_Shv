@@ -372,52 +372,41 @@
 
   // --- Export CSV Handler ---
   function exportToCsv() {
-    if (!currentMember || !currentDonations) {
-      showAlert('पहले सदस्य का विवरण खोजें।', 'error');
-      return;
+    let csv = [];
+    let rows = document.querySelectorAll("#diaryTable tr");
+
+    if (rows.length === 0) {
+        alert("एक्सपोर्ट करने के लिए कोई डेटा उपलब्ध नहीं है!");
+        return;
     }
 
-    let csvContent = 'data:text/csv;charset=utf-8,';
-    csvContent += 'PMUM Shikshak Sangh MP - Karmachari Kalyan Kosh Yojana\r\n';
-    csvContent += `Member Name,${currentMember.name}\r\n`;
-    csvContent += `PMUMS ID,${currentMember.pmumsId}\r\n`;
-    csvContent += `Unique ID,${currentMember.uniqueId}\r\n`;
-    csvContent += `Mobile,${currentMember.mobile}\r\n`;
-    csvContent += `School,${currentMember.school}\r\n`;
-    csvContent += `Block,${currentMember.block}\r\n`;
-    csvContent += `District,${currentMember.district}\r\n\r\n`;
-
-    csvContent += 'S.No,Beneficiary Name,Contribution Date,Amount,Payment Mode,Account/UPI,Remarks\r\n';
-
-    const savedNotesKey = `PMUMS_USER_NOTES_${currentMember.pmumsId}`;
-    let savedNotes = {};
-    try {
-      savedNotes = JSON.parse(localStorage.getItem(savedNotesKey)) || {};
-    } catch (e) {
-      savedNotes = {};
+    for (let i = 0; i < rows.length; i++) {
+        let row = [], cols = rows[i].querySelectorAll("td, th");
+        
+        for (let j = 0; j < cols.length; j++) {
+            // टेक्स्ट से अतिरिक्त स्पेसेस और लाइन ब्रेक साफ़ करें
+            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s+)/gm, " ").trim();
+            // डबल कोट्स को सुरक्षित रखें ताकि CSV फॉर्मेट खराब न हो
+            row.push('"' + data.replace(/"/g, '""') + '"');
+        }
+        csv.push(row.join(","));
     }
 
-    currentDonations.forEach((d, idx) => {
-      const sno = idx + 1;
-      const rowKey = getDonationRowKey(d, idx);
-      const legacyRowKey = getLegacyDonationRowKey(d, idx);
-      const savedRow = savedNotes[rowKey] || savedNotes[legacyRowKey] || {};
-      const benClean = `"${(d.beneficiary || '').replace(/"/g, '""')}"`;
-      const modeClean = `"${(savedRow.mode || '').replace(/"/g, '""')}"`;
-      const accClean = `"${(savedRow.account || '').replace(/"/g, '""')}"`;
-      const remClean = `"${(savedRow.remark || '').replace(/"/g, '""')}"`;
-
-      csvContent += `${sno},${benClean},${d.date || ''},${d.amount},${modeClean},${accClean},${remClean}\r\n`;
-    });
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `PMUMS_Diary_${currentMember.pmumsId}_${currentMember.mobile}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+    // Excel या अन्य सॉफ्टवेयर में हिंदी फॉन्ट सही दिखने के लिए BOM ('\uFEFF') जोड़ें
+    let csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
+    let downloadLink = document.createElement("a");
+    
+    // डाउनलोड होने वाली फाइल का नाम
+    let fileName = currentMember ? `PMUMS_Diary_${currentMember.pmumsId}_${currentMember.mobile}.csv` : "PMUMS_Diary_Export.csv";
+    downloadLink.download = fileName;
+    
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
 
   // --- UI Helpers ---
   function setLoading(isLoading) {
