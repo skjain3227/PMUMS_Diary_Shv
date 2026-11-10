@@ -1,9 +1,9 @@
 /* ==========================================================================
-   PMUMS DIARY - MODERN STYLING (Vanilla CSS)
-   Theme: Professional, Trustworthy, Modern Govt./Union Welfare Portal
-   Aesthetics: Deep Navy & Royal Blue, Saffron/Amber & Emerald Accents, Glassmorphism
-   Typography: Inter & Noto Sans Devanagari
-   ========================================================================== */
+    PMUMS DIARY - MODERN STYLING (Vanilla CSS)
+    Theme: Professional, Trustworthy, Modern Govt./Union Welfare Portal
+    Aesthetics: Deep Navy & Royal Blue, Saffron/Amber & Emerald Accents, Glassmorphism
+    Typography: Inter & Noto Sans Devanagari
+    ========================================================================== */
 
 :root {
   --primary: #1e3a8a;
@@ -14,11 +14,11 @@
   --accent-saffron: #f59e0b;
   --accent-saffron-light: #fef3c7;
   --accent-saffron-dark: #d97706;
-
+ 
   --accent-green: #10b981;
   --accent-green-light: #d1fae5;
   --accent-green-dark: #047857;
-
+ 
   --bg-page: #f8fafc;
   --card-bg: #ffffff;
   --card-border: #e2e8f0;
@@ -27,17 +27,17 @@
   --text-muted: #64748b;
   --text-light: #94a3b8;
   --text-inverse: #ffffff;
-
+ 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-
+ 
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-full: 9999px;
-
+ 
   --font-family: 'Inter', 'Noto Sans Devanagari', system-ui, -apple-system, sans-serif;
   --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -68,8 +68,8 @@ body {
 }
 
 /* ==========================================================================
-   HEADER SECTION
-   ========================================================================== */
+    HEADER SECTION
+    ========================================================================== */
 .site-header {
     background: var(--primary-gradient);
     color: var(--text-inverse);
@@ -273,8 +273,8 @@ body {
 }
 
 /* ==========================================================================
-   SEARCH HERO SECTION
-   ========================================================================== */
+    SEARCH HERO SECTION
+    ========================================================================== */
 .search-section {
   margin-top: 18px;
   position: relative;
@@ -455,8 +455,8 @@ body {
 }
 
 /* ==========================================================================
-   ALERTS & FEEDBACK
-   ========================================================================== */
+    ALERTS & FEEDBACK
+    ========================================================================== */
 .alert-box {
   border-radius: var(--radius-md);
   padding: 16px 20px;
@@ -490,8 +490,8 @@ body {
 }
 
 /* ==========================================================================
-   MEMBER PROFILE CARD (सदस्य का विवरण)
-   ========================================================================== */
+    MEMBER PROFILE CARD (सदस्य का विवरण)
+    ========================================================================== */
 .profile-card {
   background: var(--card-bg);
   border-radius: var(--radius-lg);
@@ -604,8 +604,8 @@ body {
 }
 
 /* ==========================================================================
-   SUMMARY STATS BANNER
-   ========================================================================== */
+    SUMMARY STATS BANNER
+    ========================================================================== */
 .stats-banner {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -669,8 +669,8 @@ body {
 }
 
 /* ==========================================================================
-   CONTRIBUTION LEDGER TABLE (सहयोग विवरण रजिस्टर)
-   ========================================================================== */
+    CONTRIBUTION LEDGER TABLE (सहयोग विवरण रजिस्टर)
+    ========================================================================== */
 .table-section-card {
   background: var(--card-bg);
   border-radius: var(--radius-lg);
@@ -691,10 +691,9 @@ body {
   border-bottom: 1px solid var(--card-border);
   padding: 18px 24px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .table-title {
@@ -710,6 +709,7 @@ body {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .btn-action {
@@ -889,8 +889,8 @@ body {
 }
 
 /* ==========================================================================
-   LEADERSHIP & CONTACT CARD
-   ========================================================================== */
+    LEADERSHIP & CONTACT CARD
+    ========================================================================== */
 .leadership-card {
   background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
   border-radius: var(--radius-lg);
@@ -997,500 +997,4 @@ body {
 }
 
 /* ==========================================================================
-   MODAL / SETTINGS DRAWER
-   ========================================================================== */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
-  z-index: 999;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.modal-overlay.active {
-  display: flex;
-  animation: fadeIn 0.25s ease;
-}
-
-.modal-content {
-  background: var(--card-bg);
-  border-radius: var(--radius-lg);
-  max-width: 580px;
-  width: 100%;
-  padding: 28px;
-  box-shadow: var(--shadow-xl);
-  position: relative;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.modal-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--primary-dark);
-}
-
-.btn-close-modal {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  color: var(--text-muted);
-  cursor: pointer;
-  line-height: 1;
-}
-
-.modal-body p {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-}
-
-.modal-field {
-  margin-bottom: 18px;
-}
-
-.modal-field label {
-  display: block;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-main);
-  margin-bottom: 6px;
-}
-
-.modal-input {
-  width: 100%;
-  padding: 10px 14px;
-  font-size: 0.95rem;
-  font-family: inherit;
-  border: 1px solid #cbd5e1;
-  border-radius: var(--radius-md);
-  outline: none;
-}
-
-.modal-input:focus {
-  border-color: var(--primary-light);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 24px;
-}
-
-/* Modal Tabs */
-.modal-tabs {
-  display: flex;
-  gap: 8px;
-  border-bottom: 2px solid #e2e8f0;
-  margin-bottom: 20px;
-}
-
-.modal-tab-btn {
-  background: none;
-  border: none;
-  padding: 8px 16px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  transition: var(--transition);
-}
-
-.modal-tab-btn.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
-}
-
-.modal-tab-pane {
-  display: none;
-}
-
-.modal-tab-pane.active {
-  display: block;
-  animation: fadeIn 0.2s ease;
-}
-
-/* Connector Test Card */
-.connector-test-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-top: 14px;
-  font-size: 0.9rem;
-}
-
-.connector-test-card.success {
-  background: #ecfdf5;
-  border-color: #a7f3d0;
-  color: #065f46;
-}
-
-.connector-test-card.error {
-  background: #fef2f2;
-  border-color: #fecaca;
-  color: #991b1b;
-}
-
-.connector-stats-row {
-  display: flex;
-  gap: 16px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.connector-stat-pill {
-  background: #ffffff;
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
-  font-size: 0.82rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Code Snippet Box */
-.code-snippet-box {
-  background: #0f172a;
-  color: #e2e8f0;
-  border-radius: var(--radius-md);
-  padding: 14px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.8rem;
-  max-height: 200px;
-  overflow-y: auto;
-  position: relative;
-  margin: 12px 0;
-  white-space: pre;
-}
-
-.btn-copy-code {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-copy-code:hover {
-  background: #2563eb;
-}
-
-/* Quick Sync Button */
-.btn-quick-sync {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
-  padding: 4px 10px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: var(--radius-full);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-quick-sync:hover {
-  background: #dbeafe;
-}
-
-.btn-quick-sync:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.connector-status-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* Excel Badge & Dropzone Styles */
-.badge-excel {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1px solid #a7f3d0;
-}
-
-.excel-dropzone {
-  border: 2px dashed #cbd5e1;
-  background: #f8fafc;
-  border-radius: var(--radius-lg);
-  padding: 24px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: var(--transition);
-  margin: 16px 0;
-}
-
-.excel-dropzone:hover,
-.excel-dropzone.drag-over {
-  border-color: #10b981;
-  background: #f0fdf4;
-}
-
-.excel-dropzone-icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 12px;
-  color: #10b981;
-}
-
-.excel-info-card {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-top: 14px;
-}
-
-.btn-excel-upload {
-  background: #059669;
-  color: #ffffff;
-  border: none;
-  padding: 10px 20px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-excel-upload:hover {
-  background: #047857;
-}
-
-.btn-quick-excel {
-  background: #f0fdf4;
-  color: #047857;
-  border: 1px solid #86efac;
-  padding: 5px 12px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  border-radius: var(--radius-full);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-quick-excel:hover {
-  background: #dcfce7;
-}
-
-
-
-/* ==========================================================================
-   FOOTER
-   ========================================================================== */
-.site-footer {
-  margin-top: auto;
-  background: #0f172a;
-  color: #94a3b8;
-  padding: 24px 0;
-  text-align: center;
-  font-size: 0.88rem;
-  border-top: 1px solid #1e293b;
-}
-
-.site-footer a {
-  color: #60a5fa;
-  text-decoration: none;
-}
-
-.site-footer a:hover {
-  text-decoration: underline;
-}
-
-/* ==========================================================================
-   PRINT STYLES (@media print)
-   Strictly formatted for A4 official passbook print
-   ========================================================================== */
-@media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    font-size: 11pt !important;
-  }
-
-  .container {
-    max-width: 100% !important;
-    padding: 0 !important;
-  }
-
-  /* Hide web non-print elements */
-  .search-section,
-  .header-actions-row,
-  .table-action-btns,
-  .btn-search,
-  .search-chips,
-  .site-footer,
-  .alert-box,
-  .empty-state,
-  .modal-overlay {
-    display: none !important;
-  }
-
-  /* Make hidden active sections visible in print */
-  .profile-card,
-  .table-section-card,
-  .leadership-card {
-    display: block !important;
-    box-shadow: none !important;
-    border: 1px solid #333333 !important;
-    margin-bottom: 16px !important;
-    break-inside: avoid;
-  }
-
-  /* Official Header for Print */
-  .site-header {
-    background: none !important;
-    color: #000000 !important;
-    box-shadow: none !important;
-    border-bottom: 2px double #000000 !important;
-    padding-bottom: 10px !important;
-  }
-
-  .header-top-banner {
-    display: none !important;
-  }
-
-  .header-inner {
-    padding: 10px 0 !important;
-  }
-
-  .header-org-title {
-    color: #000000 !important;
-    font-size: 1.6rem !important;
-    text-shadow: none !important;
-  }
-
-  .header-scheme-title {
-    color: #222222 !important;
-    font-size: 1.15rem !important;
-  }
-
-  .header-diary-pill {
-    background: none !important;
-    color: #000000 !important;
-    border: 1px solid #000000 !important;
-    padding: 3px 14px !important;
-    font-size: 1rem !important;
-    box-shadow: none !important;
-  }
-
-  .header-motto {
-    color: #444444 !important;
-    font-size: 0.85rem !important;
-  }
-
-  /* Profile Grid in Print */
-  .card-header-bar {
-    background: #e2e8f0 !important;
-    color: #000000 !important;
-    border-bottom: 1px solid #000000 !important;
-    padding: 6px 14px !important;
-  }
-
-  .profile-grid {
-    padding: 12px !important;
-    gap: 10px !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-
-  .profile-item {
-    border: 1px solid #cccccc !important;
-    background: #ffffff !important;
-    padding: 6px 10px !important;
-  }
-
-  .profile-label {
-    font-size: 7.5pt !important;
-    color: #555555 !important;
-  }
-
-  .profile-value {
-    font-size: 10pt !important;
-    color: #000000 !important;
-  }
-
-  /* Table in Print */
-  .diary-table {
-    border: 1px solid #000000 !important;
-  }
-
-  .diary-table th {
-    background: #f1f5f9 !important;
-    color: #000000 !important;
-    border: 1px solid #000000 !important;
-    padding: 6px 8px !important;
-    font-size: 9pt !important;
-  }
-
-  .diary-table td {
-    border: 1px solid #cccccc !important;
-    padding: 6px 8px !important;
-    font-size: 9pt !important;
-  }
-
-  .input-table-cell,
-  .select-table-cell {
-    border: none !important;
-    padding: 0 !important;
-    font-size: 9pt !important;
-    background: transparent !important;
-  }
-
-  /* Signatures Block on Print */
-  .print-signatures-block {
-    display: flex !important;
-    justify-content: space-between;
-    margin-top: 40px;
-    padding: 0 40px;
-    page-break-inside: avoid;
-  }
-
-  .sig-box {
-    text-align: center;
-    border-top: 1px dashed #000000;
-    width: 220px;
-    padding-top: 6px;
-    font-weight: 700;
-    font-size: 9.5pt;
-  }
-}
-
-.print-signatures-block {
-  display: none;
-}
+    MODAL / SETTINGS DRAWER
