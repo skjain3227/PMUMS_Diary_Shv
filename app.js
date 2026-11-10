@@ -165,8 +165,7 @@
 
   // --- Render Member Diary View ---
   function renderMemberDiary(member, donations) {
-    // Sort a copy so the source data stays unchanged. Valid dates appear first;
-    // undated/invalid entries remain at the end in their original relative order.
+    // Sort a copy so the source data stays unchanged. Newest donation appears first.
     const sortedDonations = donations.slice().sort(compareDonationDates);
     currentMember = member;
     currentDonations = sortedDonations;
@@ -250,7 +249,8 @@
     if (!leftDate) return 1;
     if (!rightDate) return -1;
 
-    return leftDate.getTime() - rightDate.getTime();
+    // Newest donation first.
+    return rightDate.getTime() - leftDate.getTime();
   }
 
   function parseDateString(dateValue) {
@@ -403,7 +403,7 @@
       let row = [], cols = rows[i].querySelectorAll('td, th');
 
       for (let j = 0; j < cols.length; j++) {
-        // टेक्स्ट से अतिरिक्त स्पेसेस और लाइन ब्रेक साफ़ करें
+        // टेक्स्ट स�� अतिरिक्त स्पेसेस और लाइन ब्रेक साफ़ करें
         let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s+)/gm, ' ').trim();
         // डबल कोट्स को सुरक्षित रखें ताकि CSV फॉर्मेट खराब न हो
         row.push('"' + data.replace(/"/g, '""') + '"');
