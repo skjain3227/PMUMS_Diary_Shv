@@ -56,6 +56,13 @@
   // --- Initialize ---
   function init() {
     updateDataSourceIndicator();
+
+    // Place print/export actions directly after the member details card.
+    const tableActions = document.querySelector('.table-action-btns');
+    if (tableActions && profileSection) {
+      profileSection.insertAdjacentElement('afterend', tableActions);
+    }
+
     bindEvents();
 
     // Auto-focus search input
@@ -403,7 +410,7 @@
       let row = [], cols = rows[i].querySelectorAll('td, th');
 
       for (let j = 0; j < cols.length; j++) {
-        // टेक्स्ट स�� अतिरिक्त स्पेसेस और लाइन ब्रेक साफ़ करें
+        // टेक्स्ट से अतिरिक्त स्पेसेस और लाइन ब्रेक साफ़ करें
         let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s+)/gm, ' ').trim();
         // डबल कोट्स को सुरक्षित रखें ताकि CSV फॉर्मेट खराब न हो
         row.push('"' + data.replace(/"/g, '""') + '"');
