@@ -140,7 +140,7 @@
     try {
       const db = window.PMUMS_DATABASE;
       if (!db || !db.membersByMobile) {
-        showAlert('डेटाबेस लोड नहीं हुआ। कृपया सुनिश्चित करें कि PMUMS Diary.xlsx फ़ाइल उपस्थित है।', 'error');
+        showAlert('डेटाबेस लोड नहीं हुआ। कृपया सुनिश्चित करें कि PMUMS Diary.xlsx फ़ाइल उपलब्ध है और पेज को फिर से लोड करें।', 'error');
         resetDataViews();
         return;
       }
@@ -148,7 +148,7 @@
       const member = db.membersByMobile[cleanMobile];
 
       if (!member) {
-        showAlert(`मोबाइल नंबर "${cleanMobile}" पंजीकृत सदस्यों की सूची में नहीं मिला। कृपया नंबर जांचें।`, 'error');
+        showAlert(`मोबाइल नंबर "${cleanMobile}" पंजीकृत सदस्यों की सूची में नहीं मिला। कृपया अपना पंजीकृत मोबाइल नंबर जांचें।`, 'error');
         resetDataViews();
         return;
       }
@@ -165,8 +165,11 @@
 
   // --- Render Member Diary View ---
   function renderMemberDiary(member, donations) {
+    // Sort a copy so the source data stays unchanged. Valid dates appear first;
+    // undated/invalid entries remain at the end in their original relative order.
+    const sortedDonations = donations.slice().sort(compareDonationDates);
     currentMember = member;
-    currentDonations = donations;
+    currentDonations = sortedDonations;
 
     // 1. Populate Profile
     profName.textContent = member.name || '-';
@@ -179,11 +182,11 @@
     profRegDate.textContent = member.regDate || '-';
 
     // 2. Populate Summary Stats
-    const totalCount = donations.length;
+    const totalCount = sortedDonations.length;
     let totalAmt = 0;
     let lastDate = '-';
 
-    donations.forEach(d => {
+    sortedDonations.forEach(d => {
       totalAmt += (parseFloat(d.amount) || 0);
       const donationDate = normalizeDateString(d.date);
       if (donationDate && (lastDate === '-' || compareDateStrings(donationDate, lastDate) > 0)) {
@@ -196,7 +199,7 @@
     statLastDate.textContent = lastDate || '-';
 
     // 3. Populate Table Rows
-    renderTableRows(member.pmumsId, donations);
+    renderTableRows(member.pmumsId, sortedDonations);
 
     // 4. Update Visibility
     emptyState.style.display = 'none';
@@ -238,6 +241,18 @@
     return leftDate.getTime() - rightDate.getTime();
   }
 
+  function compareDonationDates(left, right) {
+    const leftDate = parseDateString(left.date);
+    const rightDate = parseDateString(right.date);
+
+    // Keep entries with missing/unrecognized dates after dated entries.
+    if (!leftDate && !rightDate) return 0;
+    if (!leftDate) return 1;
+    if (!rightDate) return -1;
+
+    return leftDate.getTime() - rightDate.getTime();
+  }
+
   function parseDateString(dateValue) {
     const normalized = normalizeDateString(dateValue);
     if (!normalized) return null;
@@ -253,6 +268,10 @@
     }
 
     const parsed = new Date(year, month - 1, day);
+    // Reject impossible dates such as 31/02 rather than letting Date roll over.
+    if (parsed.getFullYear() !== year || parsed.getMonth() !== month - 1 || parsed.getDate() !== day) {
+      return null;
+    }
     return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
 
@@ -313,22 +332,22 @@
           </select>
         </td>
         <td>
-          <input 
-            type="text" 
-            class="input-table-cell" 
-            placeholder="खाता / UPI ID..." 
+          <input
+            type="text"
+            class="input-table-cell"
+            placeholder="खाता / UPI ID..."
             value="${escapeHtml(savedRow.account || '')}"
-            data-row="${rowKey}" 
+            data-row="${rowKey}"
             data-field="account"
           >
         </td>
         <td>
-          <input 
-            type="text" 
-            class="input-table-cell" 
-            placeholder="UTR / रिमार्क..." 
+          <input
+            type="text"
+            class="input-table-cell"
+            placeholder="UTR / रिमार्क..."
             value="${escapeHtml(savedRow.remark || '')}"
-            data-row="${rowKey}" 
+            data-row="${rowKey}"
             data-field="remark"
           >
         </td>
@@ -373,40 +392,40 @@
   // --- Export CSV Handler ---
   function exportToCsv() {
     let csv = [];
-    let rows = document.querySelectorAll("#diaryTable tr");
+    let rows = document.querySelectorAll('#diaryTable tr');
 
     if (rows.length === 0) {
-        alert("एक्सपोर्ट करने के लिए कोई डेटा उपलब्ध नहीं है!");
-        return;
+      alert('एक्सपोर्ट करने के लिए कोई डेटा उपलब्ध नहीं है!');
+      return;
     }
 
     for (let i = 0; i < rows.length; i++) {
-        let row = [], cols = rows[i].querySelectorAll("td, th");
-        
-        for (let j = 0; j < cols.length; j++) {
-            // टेक्स्ट से अतिरिक्त स्पेसेस और लाइन ब्रेक साफ़ करें
-            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s+)/gm, " ").trim();
-            // डबल कोट्स को सुरक्षित रखें ताकि CSV फॉर्मेट खराब न हो
-            row.push('"' + data.replace(/"/g, '""') + '"');
-        }
-        csv.push(row.join(","));
+      let row = [], cols = rows[i].querySelectorAll('td, th');
+
+      for (let j = 0; j < cols.length; j++) {
+        // टेक्स्ट से अतिरिक्त स्पेसेस और लाइन ब्रेक साफ़ करें
+        let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s+)/gm, ' ').trim();
+        // डबल कोट्स को सुरक्षित रखें ताकि CSV फॉर्मेट खराब न हो
+        row.push('"' + data.replace(/"/g, '""') + '"');
+      }
+      csv.push(row.join(','));
     }
 
     // Excel या अन्य सॉफ्टवेयर में हिंदी फॉन्ट सही दिखने के लिए BOM ('\uFEFF') जोड़ें
-    let csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: 'text/csv;charset=utf-8;' });
-    let downloadLink = document.createElement("a");
-    
+    let csvFile = new Blob(['\uFEFF' + csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    let downloadLink = document.createElement('a');
+
     // डाउनलोड होने वाली फाइल का नाम
-    let fileName = currentMember ? `PMUMS_Diary_${currentMember.pmumsId}_${currentMember.mobile}.csv` : "PMUMS_Diary_Export.csv";
+    let fileName = currentMember ? `PMUMS_Diary_${currentMember.pmumsId}_${currentMember.mobile}.csv` : 'PMUMS_Diary_Export.csv';
     downloadLink.download = fileName;
-    
+
     downloadLink.href = window.URL.createObjectURL(csvFile);
-    downloadLink.style.display = "none";
-    
+    downloadLink.style.display = 'none';
+
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-}
+  }
 
   // --- UI Helpers ---
   function setLoading(isLoading) {
