@@ -37,8 +37,16 @@
     updateDataSourceIndicator();
     const tableActions = document.querySelector('.table-action-btns');
     if (tableActions && profileSection) profileSection.insertAdjacentElement('afterend', tableActions);
+    if (mobileInput) mobileInput.maxLength = 10;
+    addMobileSearchStyles();
     bindEvents();
     if (mobileInput) mobileInput.focus();
+  }
+
+  function addMobileSearchStyles() {
+    const style = document.createElement('style');
+    style.textContent = '@media (max-width: 560px) { .search-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; } .search-form .input-group { grid-column: 1 / -1; min-width: 0; } .search-form .btn-search, .search-form .btn-reset { width: 100%; justify-content: center; padding: 12px 8px; font-size: 0.95rem; } }';
+    document.head.appendChild(style);
   }
 
   function updateDataSourceIndicator() {
@@ -59,12 +67,12 @@
     chipButtons.forEach(btn => btn.addEventListener('click', function () {
       const mob = this.getAttribute('data-mobile');
       if (mob) {
-        mobileInput.value = mob;
+        mobileInput.value = mob.toString().replace(/[^0-9]/g, '').slice(0, 10);
         handleSearch();
       }
     }));
     mobileInput.addEventListener('input', function () {
-      this.value = this.value.replace(/[^0-9]/g, '');
+      this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
     });
     btnPrint.addEventListener('click', () => window.print());
     btnExportCsv.addEventListener('click', exportToCsv);
@@ -73,8 +81,7 @@
 
   function cleanPhoneNumber(str) {
     if (!str) return '';
-    const digits = str.toString().replace(/[^0-9]/g, '');
-    return digits.length >= 10 ? digits.slice(-10) : digits;
+    return str.toString().replace(/[^0-9]/g, '').slice(0, 10);
   }
 
   function handleSearch() {
@@ -213,7 +220,7 @@
     diaryTableBody.innerHTML = '';
     if (donations.length === 0) {
       const tr = document.createElement('tr');
-      tr.innerHTML = '<td colspan="7" style="text-align:center;padding:30px;color:#64748b;">इस सदस्य के लिए पोर्टल पर अभी कोई सहयोग प्रविष्टि दर्ज नहीं है।</td>';
+      tr.innerHTML = '<td colspan="7" style="text-align:center;padding:30px;color:#64748b;">इस सदस्य के लिए पोर्टल पर अभी कोई सहयोग दर्ज नहीं है।</td>';
       diaryTableBody.appendChild(tr);
       return;
     }
