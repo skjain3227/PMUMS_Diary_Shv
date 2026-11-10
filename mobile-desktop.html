@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PMUMS Diary को मोबाइल पर desktop या mobile layout में देखें।">
+  <title>PMUMS Diary — Desktop View</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: #0f172a;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f1f5f9;
+    }
+    .toolbar {
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #0f172a;
+      color: #fff;
+      box-shadow: 0 2px 8px #0003;
+    }
+    .toolbar-title { font-size: 0.95rem; font-weight: 700; }
+    .toolbar-actions { display: flex; align-items: center; gap: 8px; }
+    .mode-button, .home-link {
+      min-height: 40px;
+      padding: 8px 12px;
+      border: 1px solid #ffffff55;
+      border-radius: 8px;
+      color: #fff;
+      background: #ffffff1a;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .mode-button:hover, .home-link:hover { background: #ffffff30; }
+    .frame-viewport { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+    .site-frame { display: block; width: 100%; min-width: 0; height: 100%; border: 0; background: #fff; }
+    .frame-viewport.desktop-mode .site-frame { width: 1100px; max-width: none; }
+    @media (max-width: 520px) {
+      .toolbar { align-items: flex-start; flex-direction: column; }
+      .toolbar-actions { width: 100%; }
+      .mode-button, .home-link { flex: 1; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="toolbar-title">PMUMS Diary — मोबाइल दृश्य</div>
+    <nav class="toolbar-actions" aria-label="दृश्य विकल्प">
+      <button class="mode-button" id="modeToggle" type="button" aria-pressed="false">Desktop mode चालू करें</button>
+      <a class="home-link" href="index.html">मुख्य पेज</a>
+    </nav>
+  </header>
+  <main class="frame-viewport" id="frameViewport">
+    <iframe class="site-frame" src="index.html" title="PMUMS व्यक्तिगत सहयोग डायरी"></iframe>
+  </main>
+  <script>
+    (function () {
+      const viewport = document.getElementById('frameViewport');
+      const toggle = document.getElementById('modeToggle');
+      const storageKey = 'pmums-desktop-mode';
+
+      function setDesktopMode(enabled) {
+        viewport.classList.toggle('desktop-mode', enabled);
+        toggle.setAttribute('aria-pressed', String(enabled));
+        toggle.textContent = enabled ? 'Desktop mode बंद करें' : 'Desktop mode चालू करें';
+        try { localStorage.setItem(storageKey, enabled ? 'on' : 'off'); } catch (_) { /* Storage is optional. */ }
+      }
+
+      let desktopMode = false;
+      try { desktopMode = localStorage.getItem(storageKey) === 'on'; } catch (_) { /* Use mobile layout. */ }
+      setDesktopMode(desktopMode);
+      toggle.addEventListener('click', function () {
+        setDesktopMode(!viewport.classList.contains('desktop-mode'));
+      });
+    })();
+  </script>
+</body>
+</html>
