@@ -1,25 +1,9 @@
-/**
- * ======================================================================================
- * PMUMS DIARY - EXCEL CONNECTOR & DATA EXTRACTOR MODULE
- * ======================================================================================
- * Directly extracts data from local/uploaded Excel spreadsheets (.xlsx / .xls).
- * Uses SheetJS (xlsx.full.min.js) for high-speed client-side parsing.
- * 
- * Capabilities:
- * 1. Auto-fetches local Excel file (e.g. 'PMUMS Diary.xlsx', 'diary.xlsx', etc.) if placed in folder
- * 2. Drag & Drop or File Picker for user to provide any updated Excel file directly in the browser
- * 3. Extracts 'Our_Mem', 'Donation', and 'donate' sheets directly into active memory
- * 4. Caches parsed dataset into localStorage/IndexedDB for instant zero-latency searches
- * ======================================================================================
- */
-
 (function (window) {
   'use strict';
 
   const STORAGE_KEY_EXCEL_DATA = 'PMUMS_EXCEL_EXTRACTED_DATA';
   const STORAGE_KEY_EXCEL_META = 'PMUMS_EXCEL_META_INFO';
 
-  // Common filenames to automatically check if present in project folder
   const AUTO_LOAD_CANDIDATES = [
     './PMUMS Diary.xlsx',
     './PMUMS_Diary.xlsx',
@@ -29,7 +13,6 @@
 
   let currentExcelMeta = null;
 
-  // Try restoring previously extracted data from localStorage if available
   try {
     const savedMeta = localStorage.getItem(STORAGE_KEY_EXCEL_META);
     const savedData = localStorage.getItem(STORAGE_KEY_EXCEL_DATA);
@@ -44,7 +27,6 @@
     console.warn('Could not restore cached Excel data:', e);
   }
 
-  // Ensure window.PMUMS_DATABASE is always defined
   if (!window.PMUMS_DATABASE) {
     window.PMUMS_DATABASE = {
       beneficiaries: {},
@@ -53,9 +35,6 @@
     };
   }
 
-  /**
-   * Standardize mobile numbers to last 10 digits
-   */
   function cleanPhoneNumber(val) {
     if (val == null) return '';
     let str = '';
@@ -68,9 +47,6 @@
     return digits.length >= 10 ? digits.slice(-10) : digits;
   }
 
-  /**
-   * Format Excel dates or serial numbers to dd/mm/yyyy
-   */
   function formatExcelDate(raw) {
     if (!raw) return '';
     if (raw instanceof Date) {
@@ -89,8 +65,6 @@
     }
 
     const str = raw.toString().trim();
-
-    // Check if ISO format YYYY-MM-DD
     if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
       const parts = str.split('T')[0].split('-');
       return `${parts[2]}/${parts[1]}/${parts[0]}`;
@@ -99,9 +73,6 @@
     return str;
   }
 
-  /**
-   * Case-insensitive sheet finder
-   */
   function findSheet(workbook, targetNames) {
     const sheetNames = workbook.SheetNames || [];
     for (const target of targetNames) {
@@ -115,9 +86,6 @@
     return null;
   }
 
-  /**
-   * Core Excel Parser: Parses ArrayBuffer into PMUMS database structure
-   */
   function parseExcelArrayBuffer(arrayBuffer, sourceName = 'PMUMS Diary.xlsx') {
     if (typeof XLSX === 'undefined') {
       throw new Error('SheetJS (XLSX) लाइब्रेरी लोड नहीं हुई। कृपया xlsx.full.min.js की जांच करें।');
@@ -130,12 +98,10 @@
       cellText: false
     });
 
-    // 1. Parse 'donate' sheet (Beneficiaries Master)
     const donateSheet = findSheet(workbook, ['donate', 'campaign', 'beneficiaries']);
     const beneficiaries = {};
     if (donateSheet) {
       const donateRows = XLSX.utils.sheet_to_json(donateSheet, { header: 1, defval: '' });
-      // Headers at row 0, data begins from row 1 (index 1)
       for (let i = 1; i < donateRows.length; i++) {
         const row = donateRows[i];
         const benName = (row[3] || '').toString().trim();
@@ -152,7 +118,6 @@
       }
     }
 
-    // 2. Parse 'Our_Mem' sheet (Members Master)
     const memSheet = findSheet(workbook, ['Our_Mem', 'OurMem', 'Members', 'Member']);
     if (!memSheet) {
       throw new Error(`एक्सेल फाइल में 'Our_Mem' शीट नहीं मिली। उपलब्ध शीट्स: ${workbook.SheetNames.join(', ')}`);
@@ -161,13 +126,12 @@
     const memRows = XLSX.utils.sheet_to_json(memSheet, { header: 1, defval: '' });
     const membersByMobile = {};
 
-    // Data starts around row 4 (index 3)
     for (let i = 3; i < memRows.length; i++) {
       const row = memRows[i];
-      const cleanMob = cleanPhoneNumber(row[4]); // Column E: Mobile
+      const cleanMob = cleanPhoneNumber(row[4]);
       if (cleanMob && cleanMob.length === 10) {
-        const pmumsId = (row[1] || '').toString().trim(); // Column B
-        let name = (row[0] || '').toString().trim();      // Column A
+        const pmumsId = (row[1] || '').toString().trim();
+        let name = (row[0] || '').toString().trim();
         if (!name) {
           name = `${(row[2] || '').toString().trim()} ${(row[3] || '').toString().trim()}`.trim();
         }
@@ -188,7 +152,6 @@
       }
     }
 
-    // 3. Parse 'Donation' sheet (Donations Ledger)
     const donSheet = findSheet(workbook, ['Donation', 'Donations', 'sahayog']);
     const donationsById = {};
     let totalDonationEntries = 0;
@@ -197,11 +160,11 @@
       const donRows = XLSX.utils.sheet_to_json(donSheet, { header: 1, defval: '' });
       for (let j = 3; j < donRows.length; j++) {
         const row = donRows[j];
-        const pmumsId = (row[1] || '').toString().trim(); // Column B: PMUMS ID
+        const pmumsId = (row[1] || '').toString().trim();
         if (!pmumsId) continue;
 
-        const beneficiary = (row[9] || '').toString().trim(); // Column J: Beneficiary
-        const donDate = formatExcelDate(row[10]);             // Column K: Date
+        const beneficiary = (row[3] || '').toString().trim();
+        const donDate = formatExcelDate(row[4]);
         const benRate = beneficiaries[beneficiary];
         const amount = benRate ? benRate.amount : 170;
 
@@ -232,11 +195,9 @@
       extractedAt: new Date().toISOString()
     };
 
-    // Update active memory
     window.PMUMS_DATABASE = database;
     currentExcelMeta = meta;
 
-    // Cache locally for instant loading
     try {
       localStorage.setItem(STORAGE_KEY_EXCEL_DATA, JSON.stringify(database));
       localStorage.setItem(STORAGE_KEY_EXCEL_META, JSON.stringify(meta));
@@ -245,14 +206,10 @@
     }
 
     window.dispatchEvent(new CustomEvent('pmums:excelLoaded', { detail: { meta, database } }));
-
     return { meta, database };
   }
 
   const ExcelConnector = {
-    /**
-     * Check if Excel data is currently loaded
-     */
     isLoaded() {
       return Boolean(
         window.PMUMS_DATABASE &&
@@ -261,21 +218,13 @@
       );
     },
 
-    /**
-     * Get current metadata
-     */
     getMeta() {
       return currentExcelMeta;
     },
 
-    /**
-     * Parse File object from file input or drag-and-drop
-     */
     parseFile(file) {
       return new Promise((resolve, reject) => {
-        if (!file) {
-          return reject(new Error('कोई फाइल नहीं चुनी गई।'));
-        }
+        if (!file) return reject(new Error('कोई फाइल नहीं चुनी गई।'));
 
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -292,9 +241,6 @@
       });
     },
 
-    /**
-     * Try auto-fetching an Excel file placed in the same folder
-     */
     async autoFetchLocalExcel() {
       for (const url of AUTO_LOAD_CANDIDATES) {
         try {
@@ -306,9 +252,7 @@
             console.log(`Successfully auto-loaded Excel: ${url}`);
             return result;
           }
-        } catch (e) {
-          // File not present at candidate URL, try next
-        }
+        } catch (e) {}
       }
       return null;
     }
@@ -316,13 +260,11 @@
 
   window.PMUMS_EXCEL = ExcelConnector;
 
-  // Auto-attempt loading local Excel file once DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     ExcelConnector.autoFetchLocalExcel().catch(() => {});
 
-    // Silent window drag & drop handler for updating or loading Excel file
     window.addEventListener('dragover', (e) => {
-      e.preventDefault();
+      e.preventEvent();
       e.stopPropagation();
     });
 
@@ -342,7 +284,6 @@
       }
     });
 
-    // Allow clicking the status badge to browse/update Excel if needed
     const badge = document.getElementById('dataSourceBadge');
     if (badge) {
       badge.style.cursor = 'pointer';
